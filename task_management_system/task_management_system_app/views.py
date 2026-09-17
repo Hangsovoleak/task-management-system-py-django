@@ -20,16 +20,24 @@ admin_required = user_passes_test(lambda user: user.is_superuser)
 def user_login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
+
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            if user.is_superuser: # if the user is an admin
+
+            if user.is_superuser:
                 return redirect('category_list')
-            # if the user is a normal user
+
             return redirect('user_tasks_list')
-        else:
-            form = AuthenticationForm()
-        return render(request, 'task_management_system_app/login.html', {'form': form})
+
+    else:
+        form = AuthenticationForm()
+
+    return render(
+        request,
+        'task_management_system_app/login.html',
+        {'form': form}
+    )
 
 @login_required
 def user_tasks_list(request):
